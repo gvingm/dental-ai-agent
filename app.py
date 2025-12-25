@@ -134,7 +134,7 @@ def analyze_crm(transcript_list):
     llm = get_llm()
     text = "\n".join(transcript_list)
     crm_template = """
-    Проанализируй диалог. Верни ТОЛЬКО JSON объект. Без markdown, без кавычек ```
+    Проанализируй диалог. Верни ТОЛЬКО JSON объект. Без markdown, без кавычек ```json.
     Поля:
     {{
       "статус": "...",
@@ -147,8 +147,8 @@ def analyze_crm(transcript_list):
     raw_response = chain.invoke({"t": text})
 
     try:
-        # Чистим ответ от Markdown-тегов
-        clean_json_str = raw_response.strip().replace("```json", "").replace("```
+        # ВОТ ЭТА СТРОКА БЫЛА СЛОМАНА. ТЕПЕРЬ ОНА ПРАВИЛЬНАЯ:
+        clean_json_str = raw_response.strip().replace("``````", "").strip()
         return json.loads(clean_json_str)
     except json.JSONDecodeError:
         return {"error": "JSON Error", "raw": raw_response}
